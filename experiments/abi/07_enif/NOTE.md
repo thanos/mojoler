@@ -1,0 +1,1 @@
+Decision: on this OTP, `enif_get_int64` and `enif_make_int64` are macros for `enif_get_long` and `enif_make_long` because `SIZEOF_LONG` is 8. `beam.smp` exports `_enif_get_long`, `_enif_make_long`, and `_enif_make_badarg`. The NIF leaves those symbols undefined and links with `-undefined dynamic_lookup`. The Windows function-pointer table is not used.

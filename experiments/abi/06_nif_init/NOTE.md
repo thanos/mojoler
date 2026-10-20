@@ -1,0 +1,1 @@
+Decision: `native/poc.mojo` exports only `_nif_init` as a global text symbol. The add callback is a local symbol. The VM reaches it through the function pointer stored in the calloc'd `ErlNifFunc`, not through `dlsym`.

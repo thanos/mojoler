@@ -1,0 +1,1 @@
+Decision: calling `initialize_runtime()` twice inside `nif_init` did not crash the BEAM. A later `ping/0` returned 7. The add NIF does not call it, and its tests still pass. `parallelize` is not in the Mojo 1.1.0 standard library (the compiler points at the separate `max` package), so GPU and thread-pool behavior inside a NIF was not tested.

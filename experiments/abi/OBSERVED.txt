@@ -1,0 +1,82 @@
+== 01 export add ==
+Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
+0000000000000358 T _mojoler_add
+/Users/thanos/work/mojler/experiments/abi/01_export_add/libadd.dylib:
+	/Users/thanos/work/mojler/experiments/abi/01_export_add/libadd.dylib (compatibility version 0.0.0, current version 0.0.0)
+	@rpath/libKGENCompilerRTShared.dylib (compatibility version 0.0.0, current version 0.0.0)
+	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)
+Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
+llvm bytes      616
+
+== 02 thin callback ==
+Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
+sizeof 8
+result 42
+
+== 03 layout ==
+Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
+NifFunc sizeof 32 align 8
+  name 0
+  arity 8
+  fptr 16
+  flags 24
+NifEntry sizeof 96 align 8
+  major 0
+  minor 4
+  name 8
+  num_of_funcs 16
+  funcs 24
+  load 32
+  reload 40
+  upgrade 48
+  unload 56
+  vm_variant 64
+  options 72
+  sizeof_resource_init 80
+  min_erts 88
+optional_none_or 0
+literal Elixir.Mojoler.POC
+
+== diagnostic C (not linked into the NIF) ==
+pointer=8 int=4 unsigned=4 long=8 size_t=8
+ERL_NIF_MAJOR=2 ERL_NIF_MINOR=17
+ERL_NIF_TERM size=8
+ErlNifFunc sizeof=32 align=8
+  ErlNifFunc.name                          offset=0   size=8
+  ErlNifFunc.arity                         offset=8   size=4
+  ErlNifFunc.fptr                          offset=16  size=8
+  ErlNifFunc.flags                         offset=24  size=4
+ErlNifEntry sizeof=96 align=8
+  ErlNifEntry.major                        offset=0   size=4
+  ErlNifEntry.minor                        offset=4   size=4
+  ErlNifEntry.name                         offset=8   size=8
+  ErlNifEntry.num_of_funcs                 offset=16  size=4
+  ErlNifEntry.funcs                        offset=24  size=8
+  ErlNifEntry.load                         offset=32  size=8
+  ErlNifEntry.reload                       offset=40  size=8
+  ErlNifEntry.upgrade                      offset=48  size=8
+  ErlNifEntry.unload                       offset=56  size=8
+  ErlNifEntry.vm_variant                   offset=64  size=8
+  ErlNifEntry.options                      offset=72  size=4
+  ErlNifEntry.sizeof_ErlNifResourceTypeInit offset=80  size=8
+  ErlNifEntry.min_erts                     offset=88  size=8
+ErlNifResourceTypeInit sizeof=40 align=8
+  ErlNifResourceTypeInit.dtor              offset=0   size=8
+  ErlNifResourceTypeInit.stop              offset=8   size=8
+  ErlNifResourceTypeInit.down              offset=16  size=8
+  ErlNifResourceTypeInit.members           offset=24  size=4
+  ErlNifResourceTypeInit.dyncall           offset=32  size=8
+vm_variant="beam.vanilla" min_erts="erts-14.0"
+dirty cpu=1 io=2
+
+== 04 calloc lifetime ==
+Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
+add
+arity 2
+
+== 05-08 nif_init, enif symbols, dlopen ==
+Covered by scripts/build-native.sh, scripts/inspect-abi.sh, and mix test.
+
+== 05 runtime init inside a fresh BEAM (re-run) ==
+runtime ping 7
+initialize_runtime called twice from nif_init before the entry was returned.

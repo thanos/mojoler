@@ -1,0 +1,1 @@
+Decision: Mojo 1.1.0 can emit a Mach-O shared library and a C ABI symbol. `mojoler_add` lowers to `define dso_local i64 @mojoler_add(i64, i64)`. That is necessary for a NIF and is not sufficient: this library has no `nif_init`.

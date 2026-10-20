@@ -1,0 +1,1 @@
+Decision: `:erlang.load_nif/2` on this Darwin build appends `.so`. `mix test` loaded `priv/native/libpoc.so`, checked `add(20, 22) == 42`, and the isolated Elixir process exited 0. A second load from the same module returns `{:error, {:reload, 'NIF library already loaded (reload disallowed since OTP 20).'}}`.

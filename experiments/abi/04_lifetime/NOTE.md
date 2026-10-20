@@ -1,0 +1,1 @@
+Decision: Mojo 1.1.0 rejects module-level `var`. `calloc` provides storage that outlives `nif_init`. A string literal's `as_c_string_span().ptr()` has `ImmStaticOrigin` and still reads back after `calloc`.

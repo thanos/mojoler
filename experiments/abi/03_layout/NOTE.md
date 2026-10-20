@@ -1,0 +1,1 @@
+Decision: the Mojo structs in this directory match the diagnostic C offsets for `ErlNifFunc` (32 bytes) and `ErlNifEntry` (96 bytes) on this machine. `Optional[Pointer]` None is the all-zero pattern, so it is a C NULL. `Optional` of a thin function is 16 bytes and cannot be used for a nullable callback field.

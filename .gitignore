@@ -1,0 +1,13 @@
+.venv/
+.mojo_cache/
+_build/
+deps/
+erl_crash.dump
+priv/native/*.so
+experiments/abi/**/*.dylib
+experiments/abi/**/*.so
+experiments/gpu/*.so
+experiments/abi/**/*.ll
+experiments/abi/diagnostic/layout
+/baoulo/
+.tool-versions 
