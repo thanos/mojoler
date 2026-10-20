@@ -61,7 +61,7 @@ API symbols the callback calls:
 
 Uncertainties:
 
-- Linux x86-64 padding was not measured. LP64 usually matches, but "usually" is not a log.
+- Linux x86-64 padding was measured in Actions run 39451722783. Clang and the Mojo layout program printed the same offsets as on this Mac (E18).
 - The loader's exact C function in OTP's `erl_nif.c` was not recompiled here. The observable contract (symbol `nif_init`, `.so` suffix, version `2.17`, reload error text) was checked from this erts install and from ExUnit.
 - Whether a future Mojo release keeps `RegisterPassable` layout identical to clang's is unknown. Re-run both layout programs after every compiler bump.
 

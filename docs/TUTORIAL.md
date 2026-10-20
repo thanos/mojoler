@@ -17,7 +17,7 @@ Each numbered chapter has the same ten sections: objectives, why it matters, a m
 7. [06 — Mojo meets that ABI](06-mojo-meets-otp-abi.md). The eight experiments and the `calloc` decision.
 8. [07 — Memory and lifetime](07-memory-and-lifetime.md). What is borrowed, what is leaked, what was not attempted.
 9. [08 — Schedulers and runtime](08-schedulers-and-runtime.md). Dirty flags, `initialize_runtime`, and the overhead samples.
-10. [09 — Feasibility](09-feasibility-report.md). PASS on this Mac, untested on Linux.
+10. [09 — Feasibility](09-feasibility-report.md). PASS for `add/2` on this Mac and on Linux x86-64. One Apple GPU call also returned 42.
 
 ## Suggested order of commands
 
@@ -32,4 +32,4 @@ If doctor fails, stop. The later commands assume `.venv/bin/mojo` and OTP 28.3.1
 
 ## What you should be able to say at the end
 
-The BEAM wants a `nif_init` that returns a 96-byte `ErlNifEntry` for NIF 2.17, and a callback it will call as a C function. Mojo 1.1.0 emits that callback as a thin function and that entry as a `RegisterPassable` struct whose offsets matched clang. They meet because `dlopen` binds `enif_get_long` to `beam.smp` and the VM calls the function pointer stored in the entry. The result succeeds on this Mac: `add(20, 22)` is 42, and the suite around it passed. It is not evidence about Linux, GPUs, or binaries.
+The BEAM wants a `nif_init` that returns a 96-byte `ErlNifEntry` for NIF 2.17, and a callback it will call as a C function. Mojo 1.1.0 emits that callback as a thin function and that entry as a `RegisterPassable` struct whose offsets matched clang. They meet because `dlopen` binds `enif_get_long` to `beam.smp` and the VM calls the function pointer stored in the entry. The result succeeds on this Mac and, for the CPU `add/2`, on the Linux Actions runner: `add(20, 22)` is 42. A separate Apple GPU NIF also returned 42 once (E17). It is not evidence about NVIDIA, concurrent GPU calls, or binaries.

@@ -26,7 +26,7 @@
 
 **LLVM.** The compiler IR `mojo build --emit llvm` writes. The small add lowers to `add i64`. MLIR is an earlier stage this CLI did not print.
 
-**Mach-O.** macOS object-file format. `file` reports `Mach-O 64-bit dynamically linked shared library arm64`. ELF is the Linux counterpart and was not produced here.
+**Mach-O.** macOS object-file format. `file` reports `Mach-O 64-bit dynamically linked shared library arm64`. ELF is the Linux counterpart. The Ubuntu runner produced it: `nm` printed `T mojoler_add` with no leading underscore (E18).
 
 **`MutUntrackedOrigin`.** A Mojo origin that opts out of lifetime checking. Used for VM pointers and `calloc` memory. It is a promise, not a check.
 

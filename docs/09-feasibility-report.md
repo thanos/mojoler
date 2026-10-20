@@ -14,7 +14,9 @@ A green test on one Mac is a real result and a narrow one. The useful report say
 
 ```text
 PASS     macOS arm64, OTP 28.3.1, Elixir 1.20.2, Mojo 1.1.0, add/2
-UNTESTED Linux x86-64, other OTP minors, GPU, parallelize, unload
+PASS     Linux x86-64, same OTP, Elixir, and Mojo, add/2, GitHub-hosted ubuntu-24.04
+PASS     one Apple GPU call, MAX 26.6.0, separate NIF, this Mac only
+UNTESTED other OTP minors, NVIDIA, Linux GPU, parallelize, unload
 ```
 
 ## Theory
@@ -31,7 +33,7 @@ Criteria used:
 
 Compatibility matrix:
 
-- OS/CPU: macOS 26.5 arm64, tested. Linux x86-64 is the `linux` GitHub Actions job (`.github/workflows/linux.yml`). That row stays untested in this report until the job is green and its log is in the ledger. The job has no GPU.
+- OS/CPU: macOS 26.5 arm64, tested. Linux x86-64 tested by [Actions run 39451722783](https://github.com/thanos/mojoler/actions/runs/39451722783): doctor ready, layout offsets match, `runtime ping 7`, ExUnit `11 passed`. See ledger E18 and E19. That job has no GPU.
 - OTP: 28.3.1, erts 16.2, NIF 2.17, tested.
 - Elixir: 1.20.2-otp-28, tested.
 - Mojo: 1.1.0 (`8189361e`), tested. Nightly was not required.
@@ -43,7 +45,7 @@ Blockers and workarounds:
 - Mojo: `Pointer` is non-nullable, and `Optional` of a thin function is 16 bytes. Workaround: `Optional[Pointer]` for NULL callbacks, measured as 8 zero bytes.
 - OTP ABI: `enif_get_int64` is a macro on this build. Workaround: call `enif_get_long` and `enif_make_long`.
 - OTP ABI: Darwin `load_nif` appends `.so`. Workaround: name the file `libpoc.so`.
-- Runtime: `libKGENCompilerRTShared.dylib` must be on the embedded rpath. Workaround: build inside the project venv and do not relocate the `.so` without that dylib. Not a workaround for a missing feature so much as a deployment constraint.
+- Runtime: on Darwin, `libKGENCompilerRTShared.dylib` must be on the embedded rpath. Workaround: build inside the project venv and do not relocate the `.so` without that dylib. On the Linux runner, `ldd` of `libpoc.so` lists libc and the dynamic linker only (E19). The venv still contains `libKGENCompilerRTShared.so`; this `add` image does not need it as a `DT_NEEDED` entry.
 - Runtime: GPU code lives in the `max` package (26.6.0 here), not in the Mojo 1.1.0 standard library. A one-element Apple GPU add returned 42 from a separate NIF. See ledger E17. NVIDIA, concurrency, and long kernels were not run.
 - Build tooling: macOS two-level namespace. Workaround that was verified: `-Xlinker -undefined -Xlinker dynamic_lookup`.
 
@@ -77,7 +79,7 @@ Stage 1, justified by the PASS:
 2. Generate the constants (`minor`, resource size, `min_erts`, `vm_variant`) from the diagnostic program's output so an OTP bump is a regenerated file plus a re-run, not a hand edit.
 3. Add `enif_make_atom` and a copied binary only after a lifetime test like chapter 07's stretch.
 4. Keep `-undefined dynamic_lookup` behind the same build script, and fail `doctor` when the KGEN dylib is missing.
-5. Repeat the whole matrix on Linux x86-64 before calling the project portable. Until that log exists, the README should keep saying macOS arm64.
+5. The CPU matrix has now been repeated on Linux x86-64 (E18, E19). Portability still does not include a GPU on Linux, another OTP minor, or NVIDIA.
 
 ## Hands-on exercise
 
@@ -111,5 +113,5 @@ Choose Rustler or Zigler today if you need binaries, resources, dirty schedulers
 ## Checkpoint
 
 1. What is the verdict on this Mac? PASS.
-2. What is the verdict on Linux? Untested. Do not upgrade that to PASS.
-3. Stretch: run the three scripts on a Linux host, append a ledger row, and only then edit the matrix in this file.
+2. What is the verdict on Linux CPU `add/2`? PASS, from the green Actions log in E18 and E19. That is not a GPU verdict.
+3. What remains untested? NVIDIA, a GPU call on Linux, concurrent GPU calls, and unload.

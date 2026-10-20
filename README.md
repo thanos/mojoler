@@ -12,7 +12,7 @@ The native code is [native/poc.mojo](native/poc.mojo). The Elixir stub is [lib/m
 
 ## Platform
 
-Tested only on macOS 26.5, Apple silicon, OTP 28.3.1 (erts 16.2), Elixir 1.20.2, Mojo 1.1.0 (`8189361e`). Linux x86-64 was not run.
+Tested on macOS 26.5, Apple silicon, and on Linux x86-64 (`ubuntu-24.04` in GitHub Actions). Both used OTP 28.3.1 (erts 16.2), Elixir 1.20.2, and Mojo 1.1.0 (`8189361e`). A separate one-element Apple GPU add, MAX 26.6.0, also returned 42 on this Mac. The Linux job has no GPU.
 
 ## Setup
 
@@ -24,7 +24,7 @@ scripts/test-isolated.sh
 
 `.tool-versions` selects Erlang 28.3.1 and Elixir 1.20.2-otp-28. `scripts/test-isolated.sh` rebuilds `priv/native/libpoc.so` and runs ExUnit under a 180 second alarm.
 
-The `linux` GitHub Actions workflow runs that same CPU check on Ubuntu 24.04. It does not have a GPU. Linux stays an open row in the feasibility report until that job is green.
+The `linux` GitHub Actions workflow runs that same CPU check on Ubuntu 24.04. [Run 39451722783](https://github.com/thanos/mojoler/actions/runs/39451722783) finished with `11 passed`. It does not have a GPU.
 
 ## What is deliberately absent
 

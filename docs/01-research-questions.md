@@ -59,7 +59,7 @@ The Elixir side of the minimum demonstration is the stub in [lib/mojoler/poc.ex]
 
 - Tests fail in `load_nif` before any assertion: the `.so` did not build, the rpath cannot see `libKGENCompilerRTShared.dylib`, or dyld could not bind `enif_get_long`. Run `scripts/inspect-abi.sh`.
 - `add` returns a wrong integer: the term width or the overflow check drifted. Re-run the layout experiment before editing the arithmetic.
-- Claiming Linux works because the Mac run passed: that claim is out of bounds. This tree has no Linux log.
+- Claiming Linux works because the Mac run passed: that claim is out of bounds. The Linux claim is the green Actions log in ledger E18 and E19, and it covers CPU `add/2` only.
 
 ## Rustler and Zigler
 

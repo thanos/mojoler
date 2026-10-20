@@ -2,7 +2,7 @@
 
 ## D1 — Pin this Mac, OTP 28.3.1, Elixir 1.20.2, Mojo 1.1.0
 
-Linux was not available. The newest installed OTP/Elixir pair was already 28.3.1 and 1.20.2. Stable `mojo==1.1.0` emitted `--emit shared-lib`, so nightly was not used. Consequences: every constant in `nif_init` is for NIF 2.17 on LP64 Darwin. Other platforms stay untested.
+Linux was not available when this pin was chosen. The newest installed OTP/Elixir pair was already 28.3.1 and 1.20.2. Stable `mojo==1.1.0` emitted `--emit shared-lib`, so nightly was not used. Consequences: every constant in `nif_init` is for NIF 2.17. Linux x86-64 later matched those sizes (E18). Other OTP minors stay untested.
 
 ## D2 — Call `enif_get_long` and `enif_make_long`
 
@@ -32,9 +32,9 @@ This OTP's `load_nif` appends `.so` on Darwin. The Mach-O type can still be a dy
 
 `experiments/abi/diagnostic/layout.c` exists to ask clang for `offsetof`. `scripts/build-native.sh` compiles only `native/poc.mojo`. The feasibility verdict does not treat that C file as a shim.
 
-## D10 — Linux CI uses a different link line, and it is not yet evidence
+## D10 — Linux CI uses `--unresolved-symbols=ignore-all`
 
-`.github/workflows/linux.yml` runs the CPU NIF on `ubuntu-24.04`. Darwin keeps `-undefined dynamic_lookup`. Linux first used `--unresolved-symbols=ignore-in-shared-libs`. Actions run [39365275751](https://github.com/thanos/mojoler/actions/runs/39365275751) linked with `/usr/bin/ld` and failed: `undefined reference to enif_make_long`, because that flag still reports undefined symbols from the Mojo archive. The Linux line is now `--unresolved-symbols=ignore-all` plus `-z undefs`. A later green run is what verifies it. The workflow does not rent a GPU and does not change the macOS PASS.
+`.github/workflows/linux.yml` runs the CPU NIF on `ubuntu-24.04`. Darwin keeps `-undefined dynamic_lookup`. Linux first used `--unresolved-symbols=ignore-in-shared-libs`. Actions run [39365275751](https://github.com/thanos/mojoler/actions/runs/39365275751) linked with `/usr/bin/ld` and failed: `undefined reference to enif_make_long`, because that flag still reports undefined symbols from the Mojo archive. The Linux line is `--unresolved-symbols=ignore-all` plus `-z undefs`. [Run 39451722783](https://github.com/thanos/mojoler/actions/runs/39451722783) is the green log (E18, E19). The workflow does not rent a GPU and does not change the macOS PASS.
 
 ## D9 — Checked overflow is `ArgumentError`
 
