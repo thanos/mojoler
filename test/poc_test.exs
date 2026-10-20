@@ -91,12 +91,15 @@ defmodule Mojoler.POCTest do
     assert undefined =~ "enif_make_long"
     assert undefined =~ "enif_make_badarg"
     refute undefined =~ "enif_get_int64"
-    assert deps =~ "libKGENCompilerRTShared"
 
     if match?({:unix, :darwin}, :os.type()) do
+      assert deps =~ "libKGENCompilerRTShared"
       assert deps =~ "libSystem.B.dylib"
     else
+      # Linux ldd lists libc and the dynamic linker. libKGENCompilerRTShared
+      # is not a DT_NEEDED entry, and load_nif still succeeds.
       assert deps =~ "libc.so"
+      refute deps =~ "libKGENCompilerRTShared"
     end
   end
 
