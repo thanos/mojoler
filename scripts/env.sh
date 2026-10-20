@@ -19,7 +19,16 @@ fi
 if [[ "$(uname -s)" == "Darwin" ]]; then
   MOJO_LINK_FLAGS=(-Xlinker -undefined -Xlinker dynamic_lookup)
 else
-  MOJO_LINK_FLAGS=(-Xlinker --unresolved-symbols=ignore-in-shared-libs)
+  # ignore-in-shared-libs still errors on undefined symbols that come from
+  # the Mojo archive itself. CI run 39365275751 failed that way on
+  # enif_make_long. ignore-all is the GNU ld switch that leaves those
+  # symbols for ld.so to bind when beam.smp loads the library. -z undefs
+  # cancels -z defs if the compiler driver passes that.
+  MOJO_LINK_FLAGS=(
+    -Xlinker --unresolved-symbols=ignore-all
+    -Xlinker -z
+    -Xlinker undefs
+  )
 fi
 
 if command -v clang >/dev/null 2>&1; then

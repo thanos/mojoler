@@ -68,6 +68,4 @@ fi
 
   printf '\n== 06-08 nif_init, enif symbols, dlopen ==\n'
   printf 'Covered by scripts/build-native.sh, scripts/inspect-abi.sh, and mix test.\n'
-} >"$out" 2>&1
-
-cat "$out"
+} 2>&1 | tee "$out"
