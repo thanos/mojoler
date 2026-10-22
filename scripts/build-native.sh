@@ -5,17 +5,45 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/.." && pwd)"
 # shellcheck source=env.sh
 source "$root/scripts/env.sh"
-mojo="$root/.venv/bin/mojo"
+mojo="${MOJO:-}"
 
-if [[ ! -x "$mojo" ]]; then
-  printf 'mojo is not installed at %s\n' "$mojo" >&2
-  printf 'run: uv venv && uv pip install -r requirements.txt\n' >&2
+if [[ -z "$mojo" || ! -x "$mojo" ]]; then
+  printf 'mojo is not installed\n' >&2
+  printf 'put mojo on PATH, or run: uv venv && uv pip install -r requirements.txt\n' >&2
   exit 1
 fi
 
-mkdir -p "$root/priv/native"
+out="${MOJOLER_OUT:-$root/priv/native}"
+mkdir -p "$out"
 
-"$mojo" build "$root/native/poc.mojo" \
-  --emit shared-lib \
-  -o "$root/priv/native/libpoc.so" \
-  "${MOJO_LINK_FLAGS[@]}"
+# Only .mojo sources are inputs. The diagnostic C probe is not in this list.
+inputs=(
+  "$root/native/poc.mojo"
+  "$root/native/twice.mojo"
+  "$root/native/term.mojo"
+  "$root/native/own.mojo"
+  "$root/native/sched.mojo"
+  "$root/native/generated/arith.mojo"
+  "$root/native/generated/bytes.mojo"
+  "$root/native/generated/box.mojo"
+)
+printf '%s\n' "${inputs[@]}" >"$out/link-inputs.txt"
+
+build_one() {
+  local src="$1"
+  local out="$2"
+  "$mojo" build "$src" \
+    --emit shared-lib \
+    -I "$root/native" \
+    -o "$out" \
+    "${MOJO_LINK_FLAGS[@]}"
+}
+
+build_one "$root/native/poc.mojo" "$out/libpoc.so"
+build_one "$root/native/twice.mojo" "$out/libtwice.so"
+build_one "$root/native/term.mojo" "$out/libterm.so"
+build_one "$root/native/own.mojo" "$out/libown.so"
+build_one "$root/native/sched.mojo" "$out/libsched.so"
+build_one "$root/native/generated/arith.mojo" "$out/libdsl_arith.so"
+build_one "$root/native/generated/bytes.mojo" "$out/libdsl_bytes.so"
+build_one "$root/native/generated/box.mojo" "$out/libdsl_box.so"

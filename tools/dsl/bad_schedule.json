@@ -1,0 +1,14 @@
+{
+  "modules": [
+    {
+      "module": "Mojoler.Dsl.Nope",
+      "lib": "libnope",
+      "source": "native/generated/nope.mojo",
+      "elixir": "lib/mojoler/dsl/nope.ex",
+      "user": "examples.arith_user",
+      "functions": [
+        {"name": "add", "arity": 2, "kind": "add", "schedule": "sideways", "ownership": "copy"}
+      ]
+    }
+  ]
+}

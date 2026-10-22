@@ -9,12 +9,10 @@ defmodule Mojoler.POC do
   @on_load :load_nif
 
   def load_nif do
-    path =
-      :mojoler
-      |> Application.app_dir("priv/native/libpoc")
-      |> String.to_charlist()
-
-    :erlang.load_nif(path, 0)
+    case :erlang.load_nif(Mojoler.Nif.path("libpoc"), 0) do
+      :ok -> Mojoler.Nif.mark!("libpoc")
+      other -> other
+    end
   end
 
   @doc """

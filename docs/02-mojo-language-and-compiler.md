@@ -1,5 +1,7 @@
 # 02 — Mojo language and compiler
 
+Later stages kept these 1.1.0 rules and added one that this chapter's examples did not hit: a file-scope `alias` does not parse. Constants in the generated ABI are functions such as `abi_dirty_cpu()`. The GPU paragraph below is the Stage 0 observation. Stage 8 later ran a MAX kernel; see [stages/s8.md](stages/s8.md).
+
 ## Learning objectives
 
 - Read Mojo 1.1.0 as a compiled language with a C ABI escape hatch.

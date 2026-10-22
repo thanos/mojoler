@@ -1,0 +1,36 @@
+{
+  "modules": [
+    {
+      "module": "Mojoler.Dsl.Arith",
+      "lib": "libdsl_arith",
+      "source": "native/generated/arith.mojo",
+      "elixir": "lib/mojoler/dsl/arith.ex",
+      "user": "examples.arith_user",
+      "functions": [
+        {"name": "add", "arity": 2, "kind": "add", "schedule": "normal", "ownership": "copy"}
+      ]
+    },
+    {
+      "module": "Mojoler.Dsl.Bytes",
+      "lib": "libdsl_bytes",
+      "source": "native/generated/bytes.mojo",
+      "elixir": "lib/mojoler/dsl/bytes.ex",
+      "user": "examples.bytes_user",
+      "functions": [
+        {"name": "shift", "arity": 1, "kind": "shift", "schedule": "normal", "ownership": "copy"},
+        {"name": "borrow_len", "arity": 1, "kind": "borrow_len", "schedule": "normal", "ownership": "borrow"}
+      ]
+    },
+    {
+      "module": "Mojoler.Dsl.Box",
+      "lib": "libdsl_box",
+      "source": "native/generated/box.mojo",
+      "elixir": "lib/mojoler/dsl/box.ex",
+      "user": "examples.box_user",
+      "functions": [
+        {"name": "open", "arity": 0, "kind": "open", "schedule": "normal", "ownership": "resource"},
+        {"name": "bump", "arity": 2, "kind": "bump", "schedule": "normal", "ownership": "resource"}
+      ]
+    }
+  ]
+}

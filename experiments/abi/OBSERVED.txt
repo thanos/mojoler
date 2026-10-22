@@ -1,9 +1,10 @@
 == 01 export add ==
 Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
-0000000000000358 T _mojoler_add
+0000000000000398 T _mojoler_add
 /Users/thanos/work/mojler/experiments/abi/01_export_add/libadd.dylib:
 	/Users/thanos/work/mojler/experiments/abi/01_export_add/libadd.dylib (compatibility version 0.0.0, current version 0.0.0)
 	@rpath/libKGENCompilerRTShared.dylib (compatibility version 0.0.0, current version 0.0.0)
+	@rpath/libAsyncRTMojoBindings.dylib (compatibility version 0.0.0, current version 0.0.0)
 	/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)
 Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
 llvm bytes      616
@@ -74,9 +75,9 @@ Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: w
 add
 arity 2
 
-== 05-08 nif_init, enif symbols, dlopen ==
-Covered by scripts/build-native.sh, scripts/inspect-abi.sh, and mix test.
-
-== 05 runtime init inside a fresh BEAM (re-run) ==
+== 05 runtime init inside a fresh BEAM ==
+Failed to initialize Crashpad.  Crash reporting will not be available.  Cause: while locating crashpad handler: unable to locate crashpad handler executable
 runtime ping 7
-initialize_runtime called twice from nif_init before the entry was returned.
+
+== 06-08 nif_init, enif symbols, dlopen ==
+Covered by scripts/build-native.sh, scripts/inspect-abi.sh, and mix test.
