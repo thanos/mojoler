@@ -1,6 +1,8 @@
 defmodule Mojoler.OwnTest do
   use ExUnit.Case, async: false
 
+  doctest Mojoler.Own
+
   test "counter add, double close, and one destructor" do
     abandon_counter()
     :erlang.garbage_collect()

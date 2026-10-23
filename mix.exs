@@ -16,7 +16,21 @@ defmodule Mojoler.MixProject do
       source_url: @source_url,
       homepage_url: @source_url,
       docs: docs(),
+      test_coverage: [tool: ExCoveralls],
       deps: deps()
+    ]
+  end
+
+  def cli do
+    [
+      preferred_envs: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.html": :test,
+        "coveralls.json": :test,
+        "coveralls.post": :test,
+        "coveralls.github": :test
+      ]
     ]
   end
 
@@ -28,6 +42,8 @@ defmodule Mojoler.MixProject do
 
   defp deps do
     [
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.18", only: :test},
       {:ex_doc, "~> 0.40", only: :dev, runtime: false}
     ]
   end
@@ -83,7 +99,14 @@ defmodule Mojoler.MixProject do
     [
       main: "readme",
       source_ref: "v#{@version}",
-      extras: ["README.md" | guides ++ stage0 ++ units ++ stages ++ ~w(docs/GLOSSARY.md docs/DECISIONS.md docs/evidence-ledger.md docs/direct_mojo_proof.md)],
+      extras: [
+        "README.md"
+        | guides ++
+            stage0 ++
+            units ++
+            stages ++
+            ~w(docs/GLOSSARY.md docs/DECISIONS.md docs/evidence-ledger.md docs/direct_mojo_proof.md)
+      ],
       groups_for_extras: [
         Guides: guides,
         "Stage 0": stage0,

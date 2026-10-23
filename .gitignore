@@ -3,6 +3,7 @@
 _build/
 deps/
 /doc/
+/cover/
 /mojoler-*.tar
 erl_crash.dump
 priv/native/*.so

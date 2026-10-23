@@ -43,8 +43,13 @@ jobs:
       - name: G1 ABI check
         run: scripts/check-abi.sh | tee /tmp/abi.txt
 
-      - name: G0 G2 G3 G4 G6 G7 ExUnit
-        run: scripts/test-isolated.sh | tee /tmp/exunit.txt
+      - name: Credo
+        run: mix credo --strict
+
+      - name: G0 G2 G3 G4 G6 G7 ExUnit and Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: perl -e 'alarm shift; exec @ARGV' 180 mix coveralls.github | tee /tmp/exunit.txt
 
       - name: G5 consumer and umbrella
         run: |

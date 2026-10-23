@@ -140,7 +140,7 @@ td.source {
 </head>
 <body>
 <h1><code>cover/Elixir.Mix.Tasks.Mojoler.Inspect.html</code></h1>
-<footer><p>File generated from <code>/Users/thanos/work/mojler/lib/mix/tasks/mojoler.inspect.ex</code> by <a href="http://erlang.org/doc/man/cover.html">cover</a> at 2026-10-22 at 08:57:51</p></footer>
+<footer><p>File generated from <code>/Users/thanos/work/mojler/lib/mix/tasks/mojoler.inspect.ex</code> by <a href="http://erlang.org/doc/man/cover.html">cover</a> at 2026-10-23 at 16:05:35</p></footer>
 <table>
 <tbody>
 <tr>
@@ -156,12 +156,12 @@ td.source {
 <tr>
 <td class="line" id="L3"><a href="#L3">3</a></td>
 <td class="hits"></td>
-<td class="source"><code></code></td>
+<td class="source"><code>  @moduledoc """</code></td>
 </tr>
 <tr>
 <td class="line" id="L4"><a href="#L4">4</a></td>
 <td class="hits"></td>
-<td class="source"><code>  use Mix.Task</code></td>
+<td class="source"><code>  Prints `nif_init`, undefined symbols, and dynamic dependencies for one library.</code></td>
 </tr>
 <tr>
 <td class="line" id="L5"><a href="#L5">5</a></td>
@@ -171,75 +171,205 @@ td.source {
 <tr>
 <td class="line" id="L6"><a href="#L6">6</a></td>
 <td class="hits"></td>
-<td class="source"><code>  @impl Mix.Task</code></td>
+<td class="source"><code>  `run/1` is the `c:Mix.Task.run/1` callback behind `mix mojoler.inspect`.</code></td>
 </tr>
 <tr>
 <td class="line" id="L7"><a href="#L7">7</a></td>
 <td class="hits"></td>
-<td class="source"><code>  def run(args) do</code></td>
+<td class="source"><code>  """</code></td>
 </tr>
-<tr class="miss">
+<tr>
 <td class="line" id="L8"><a href="#L8">8</a></td>
-<td class="hits"><pre style="display: inline;">:-(</pre></td>
-<td class="source"><code>    root = Mojoler.Build.root()</code></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
 </tr>
-<tr class="miss">
+<tr>
 <td class="line" id="L9"><a href="#L9">9</a></td>
-<td class="hits"><pre style="display: inline;">:-(</pre></td>
-<td class="source"><code>    so = List.first(args) || Path.join(root, "priv/native/libpoc.so")</code></td>
+<td class="hits"></td>
+<td class="source"><code>  use Mix.Task</code></td>
 </tr>
 <tr>
 <td class="line" id="L10"><a href="#L10">10</a></td>
 <td class="hits"></td>
 <td class="source"><code></code></td>
 </tr>
-<tr class="miss">
+<tr>
 <td class="line" id="L11"><a href="#L11">11</a></td>
-<td class="hits"><pre style="display: inline;">:-(</pre></td>
-<td class="source"><code>    {out, status} =</code></td>
+<td class="hits"></td>
+<td class="source"><code>  @doc """</code></td>
 </tr>
 <tr>
 <td class="line" id="L12"><a href="#L12">12</a></td>
 <td class="hits"></td>
-<td class="source"><code>      System.cmd("bash", ["scripts/inspect-abi.sh", so], cd: root, stderr_to_stdout: true)</code></td>
+<td class="source"><code>  Inspects one shared library.</code></td>
 </tr>
 <tr>
 <td class="line" id="L13"><a href="#L13">13</a></td>
 <td class="hits"></td>
 <td class="source"><code></code></td>
 </tr>
-<tr class="miss">
+<tr>
 <td class="line" id="L14"><a href="#L14">14</a></td>
-<td class="hits"><pre style="display: inline;">:-(</pre></td>
-<td class="source"><code>    IO.write(out)</code></td>
+<td class="hits"></td>
+<td class="source"><code>  `args` is the task argv. The first element is an optional path to a `.so`</code></td>
 </tr>
 <tr>
 <td class="line" id="L15"><a href="#L15">15</a></td>
 <td class="hits"></td>
+<td class="source"><code>  file. When `args` is empty, the path is `priv/native/libpoc.so`.</code></td>
+</tr>
+<tr>
+<td class="line" id="L16"><a href="#L16">16</a></td>
+<td class="hits"></td>
 <td class="source"><code></code></td>
 </tr>
-<tr class="miss">
-<td class="line" id="L16"><a href="#L16">16</a></td>
-<td class="hits"><pre style="display: inline;">:-(</pre></td>
-<td class="source"><code>    if status != 0 do</code></td>
-</tr>
-<tr class="miss">
+<tr>
 <td class="line" id="L17"><a href="#L17">17</a></td>
-<td class="hits"><pre style="display: inline;">:-(</pre></td>
-<td class="source"><code>      Mix.raise("inspect failed with status #{status}")</code></td>
+<td class="hits"></td>
+<td class="source"><code>  ## Returns</code></td>
 </tr>
 <tr>
 <td class="line" id="L18"><a href="#L18">18</a></td>
 <td class="hits"></td>
-<td class="source"><code>    end</code></td>
+<td class="source"><code></code></td>
 </tr>
 <tr>
 <td class="line" id="L19"><a href="#L19">19</a></td>
 <td class="hits"></td>
-<td class="source"><code>  end</code></td>
+<td class="source"><code>  `nil` when the script exits 0.</code></td>
 </tr>
 <tr>
 <td class="line" id="L20"><a href="#L20">20</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr>
+<td class="line" id="L21"><a href="#L21">21</a></td>
+<td class="hits"></td>
+<td class="source"><code>  ## Raises</code></td>
+</tr>
+<tr>
+<td class="line" id="L22"><a href="#L22">22</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr>
+<td class="line" id="L23"><a href="#L23">23</a></td>
+<td class="hits"></td>
+<td class="source"><code>    * `Mix.Error` when the script exits non-zero</code></td>
+</tr>
+<tr>
+<td class="line" id="L24"><a href="#L24">24</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr>
+<td class="line" id="L25"><a href="#L25">25</a></td>
+<td class="hits"></td>
+<td class="source"><code>  ## Examples</code></td>
+</tr>
+<tr>
+<td class="line" id="L26"><a href="#L26">26</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr>
+<td class="line" id="L27"><a href="#L27">27</a></td>
+<td class="hits"></td>
+<td class="source"><code>      iex&gt; Mix.Tasks.Mojoler.Inspect.run([])</code></td>
+</tr>
+<tr>
+<td class="line" id="L28"><a href="#L28">28</a></td>
+<td class="hits"></td>
+<td class="source"><code>      nil</code></td>
+</tr>
+<tr>
+<td class="line" id="L29"><a href="#L29">29</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr>
+<td class="line" id="L30"><a href="#L30">30</a></td>
+<td class="hits"></td>
+<td class="source"><code>  """</code></td>
+</tr>
+<tr>
+<td class="line" id="L31"><a href="#L31">31</a></td>
+<td class="hits"></td>
+<td class="source"><code>  @impl Mix.Task</code></td>
+</tr>
+<tr>
+<td class="line" id="L32"><a href="#L32">32</a></td>
+<td class="hits"></td>
+<td class="source"><code>  @spec run([Path.t()]) :: nil</code></td>
+</tr>
+<tr>
+<td class="line" id="L33"><a href="#L33">33</a></td>
+<td class="hits"></td>
+<td class="source"><code>  def run(args) do</code></td>
+</tr>
+<tr class="hit">
+<td class="line" id="L34"><a href="#L34">34</a></td>
+<td class="hits">1</td>
+<td class="source"><code>    root = Mojoler.Build.root()</code></td>
+</tr>
+<tr class="hit">
+<td class="line" id="L35"><a href="#L35">35</a></td>
+<td class="hits">1</td>
+<td class="source"><code>    so = List.first(args) || Path.join(root, "priv/native/libpoc.so")</code></td>
+</tr>
+<tr>
+<td class="line" id="L36"><a href="#L36">36</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr class="hit">
+<td class="line" id="L37"><a href="#L37">37</a></td>
+<td class="hits">1</td>
+<td class="source"><code>    {out, status} =</code></td>
+</tr>
+<tr>
+<td class="line" id="L38"><a href="#L38">38</a></td>
+<td class="hits"></td>
+<td class="source"><code>      System.cmd("bash", ["scripts/inspect-abi.sh", so], cd: root, stderr_to_stdout: true)</code></td>
+</tr>
+<tr>
+<td class="line" id="L39"><a href="#L39">39</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr class="hit">
+<td class="line" id="L40"><a href="#L40">40</a></td>
+<td class="hits">1</td>
+<td class="source"><code>    IO.write(out)</code></td>
+</tr>
+<tr>
+<td class="line" id="L41"><a href="#L41">41</a></td>
+<td class="hits"></td>
+<td class="source"><code></code></td>
+</tr>
+<tr class="hit">
+<td class="line" id="L42"><a href="#L42">42</a></td>
+<td class="hits">1</td>
+<td class="source"><code>    if status != 0 do</code></td>
+</tr>
+<tr class="miss">
+<td class="line" id="L43"><a href="#L43">43</a></td>
+<td class="hits"><pre style="display: inline;">:-(</pre></td>
+<td class="source"><code>      Mix.raise("inspect failed with status #{status}")</code></td>
+</tr>
+<tr>
+<td class="line" id="L44"><a href="#L44">44</a></td>
+<td class="hits"></td>
+<td class="source"><code>    end</code></td>
+</tr>
+<tr>
+<td class="line" id="L45"><a href="#L45">45</a></td>
+<td class="hits"></td>
+<td class="source"><code>  end</code></td>
+</tr>
+<tr>
+<td class="line" id="L46"><a href="#L46">46</a></td>
 <td class="hits"></td>
 <td class="source"><code>end</code></td>
 </tr>

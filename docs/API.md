@@ -18,21 +18,27 @@ Domain errors are `{:error, atom}`. Type errors are `ArgumentError`.
 - `add_i64/2` -> `{:ok, n}` | `{:error, :overflow}`
 - `echo_f64/1` — no integer coercion
 - `echo_atom/1` — `:ok`, `:error`, `:nil`, `true`, `false`, otherwise `{:error, :unknown_atom}`
-- `copy_binary/1` -> `{:ok, binary, nbytes}` | `{:error, :not_binary}`
-- `borrow_stable/1` -> `{:ok, size, 1}` when two views share a data pointer
+- `copy_binary/1` -> `{:ok, binary, nbytes}` | `{:error, :not_binary | :too_large | :alloc}`. The size cap is 1_048_576 bytes.
+- `borrow_stable/1` -> `{:ok, size, 1 | 0}` | `{:error, :not_binary}`
 - `fill_output/1` -> `{:ok, binary}` filled with the byte 7, or `{:error, :bad_size}`
-- `text_len/1` -> `{:ok, byte_size}` | `{:error, :invalid_utf8}`
-- `tuple_sum/1` — arity 2
-- `list_sum/1` — proper list, at most 64 integers
-- `map_n/1` — key `n`. Extra keys are dropped.
+- `text_len/1` -> `{:ok, byte_size}` | `{:error, :invalid_utf8 | :not_binary}`
+- `tuple_sum/1` — arity 2. Errors: `:not_tuple`, `:bad_arity`, `:bad_element`, `:overflow`
+- `list_sum/1` — proper list, at most 64 integers. Errors: `:not_list`, `:improper_list`, `:too_long`, `:bad_element`, `:overflow`
+- `map_n/1` — key `n`. Extra keys are dropped. Errors: `:missing`, `:bad_element`, `:map`
 
 ## Mojoler.Own
 
-- `open_counter/0`, `counter_add/2` -> `{:ok, n}` | `{:error, :closed}`, `counter_close/1`
-- `open_blob/1`, `blob_token/1`, `blob_poke/3`, `blob_borrow/1`, `blob_release/1`, `blob_freeze/1`, `blob_close/1`, `blob_pin/1`, `blob_dtors/0`
-- `retain_binary/1`, `read_retained/1`
+- `open_counter/0` returns a reference. `counter_add/2` -> `{:ok, n}` | `{:error, :closed}`. `counter_close/1` -> `:ok`, including a second close. A foreign handle raises `ArgumentError`. Collection sends `:counter_destroyed` once.
+- `open_blob/1` -> reference | `{:error, :not_binary}`
+- `blob_borrow/1` -> `{:ok, size}` | `{:error, :not_mutable}`
+- `blob_release/1` and `blob_close/1` -> `:ok`
+- `blob_freeze/1` -> `{:ok, binary}` | `{:error, :borrowed | :frozen}`
+- `blob_token/1` -> `{:ok, integer}`
+- `blob_poke/3` -> `:ok` | `{:error, :not_mutable | :bounds}`. A byte outside `0..255` raises `ArgumentError`.
+- `blob_pin/1` returns a reference. `blob_dtors/0` returns how many blob destructors have run.
+- `retain_binary/1` returns a reference. `read_retained/1` returns the copied term.
 
-Freeze fails with `{:error, :borrowed}` or `{:error, :frozen}`. The resource binary from a successful freeze stays valid after `blob_close/1`.
+The resource binary from a successful freeze stays valid after `blob_close/1`.
 
 ## Mojoler.Sched
 

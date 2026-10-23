@@ -326,34 +326,230 @@ def nif_init() abi("C") -> Pointer[ErlNifEntry, MutUntrackedOrigin]:
 
 
 def elixir(module: dict) -> str:
-    name = module["module"]
-    lib = module["lib"]
-    stubs = []
-    for fn in module["functions"]:
-        args = ", ".join("_" for _ in range(fn["arity"]))
-        if fn["arity"] == 0:
-            stubs.append(f"  def {fn['name']}, do: :erlang.nif_error(:nif_not_loaded)")
-        else:
-            stubs.append(f"  def {fn['name']}({args}), do: :erlang.nif_error(:nif_not_loaded)")
-    body = "\n".join(stubs)
-    return f"""defmodule {name} do
-  @moduledoc \"\"\"
-  Generated from `tools/dsl/decls.json`. User code is `{module["user"]}`.
-  \"\"\"
+    """Elixir stub, including the docs checked in with the generator."""
+    docs = {
+        'Mojoler.Dsl.Arith': '''defmodule Mojoler.Dsl.Arith do
+  @moduledoc """
+  Checked addition generated from `tools/dsl/decls.json`.
+
+  The native wrapper decodes the terms and calls `checked_add` in
+  `native/examples/arith_user.mojo`. This module does not declare the NIF entry.
+  """
 
   @on_load :load_nif
 
+  @doc """
+  Loads `priv/native/libdsl_arith.so`.
+
+  A second call returns `{:error, {:reload, charlist}}`.
+
+  ## Examples
+
+      iex> Mojoler.Dsl.Arith.load_nif()
+      {:error, {:reload, ~c"NIF library already loaded (reload disallowed since OTP 20)."}}
+
+  """
+  @spec load_nif() :: :ok | {:error, term()}
   def load_nif do
-    case :erlang.load_nif(Mojoler.Nif.path("{lib}"), 0) do
-      :ok -> Mojoler.Nif.mark!("{lib}")
+    case :erlang.load_nif(Mojoler.Nif.path("libdsl_arith"), 0) do
+      :ok -> Mojoler.Nif.mark!("libdsl_arith")
       other -> other
     end
   end
 
-{body}
-end
-"""
+  @doc """
+  Adds `a` and `b` as signed 64-bit integers.
 
+  Both arguments are required integers. There is no optional argument.
+
+  ## Returns
+
+    * `{:ok, sum}` when the sum fits
+    * `{:error, :overflow}` when it does not
+
+  ## Raises
+
+    * `ArgumentError` when `a` or `b` is not an integer in signed 64 bits
+
+  ## Examples
+
+      iex> Mojoler.Dsl.Arith.add(20, 22)
+      {:ok, 42}
+
+      iex> Mojoler.Dsl.Arith.add(9_223_372_036_854_775_807, 1)
+      {:error, :overflow}
+
+      iex> Mojoler.Dsl.Arith.add(1, :nope)
+      ** (ArgumentError) argument error
+
+  """
+  @spec add(integer(), integer()) :: {:ok, integer()} | {:error, :overflow}
+  # coveralls-ignore-next-line
+  def add(_a, _b), do: :erlang.nif_error(:nif_not_loaded)
+end
+''',
+        'Mojoler.Dsl.Bytes': '''defmodule Mojoler.Dsl.Bytes do
+  @moduledoc """
+  Binary examples generated from `tools/dsl/decls.json`.
+
+  `shift/1` copies the payload and adds 1 to each byte, wrapping at 255.
+  `borrow_len/1` reads the size of the caller's binary and does not copy it.
+  The byte function lives in `native/examples/bytes_user.mojo`.
+  """
+
+  @on_load :load_nif
+
+  @doc """
+  Loads `priv/native/libdsl_bytes.so`.
+
+  A second call returns `{:error, {:reload, charlist}}`.
+
+  ## Examples
+
+      iex> Mojoler.Dsl.Bytes.load_nif()
+      {:error, {:reload, ~c"NIF library already loaded (reload disallowed since OTP 20)."}}
+
+  """
+  @spec load_nif() :: :ok | {:error, term()}
+  def load_nif do
+    case :erlang.load_nif(Mojoler.Nif.path("libdsl_bytes"), 0) do
+      :ok -> Mojoler.Nif.mark!("libdsl_bytes")
+      other -> other
+    end
+  end
+
+  @doc """
+  Returns a copy of `bin` with each byte increased by 1, modulo 256.
+
+  `bin` must be a binary. A bitstring that is not a binary is an error.
+
+  ## Returns
+
+    * `{:ok, shifted, nbytes}` where `nbytes` is the byte size
+    * `{:error, :not_binary}`
+
+  ## Examples
+
+      iex> Mojoler.Dsl.Bytes.shift(<<1, 2, 255>>)
+      {:ok, <<2, 3, 0>>, 3}
+
+      iex> Mojoler.Dsl.Bytes.shift(<<>>)
+      {:ok, <<>>, 0}
+
+      iex> Mojoler.Dsl.Bytes.shift([1, 2])
+      {:error, :not_binary}
+
+  """
+  @spec shift(binary()) :: {:ok, binary(), non_neg_integer()} | {:error, :not_binary}
+  # coveralls-ignore-next-line
+  def shift(_bin), do: :erlang.nif_error(:nif_not_loaded)
+
+  @doc """
+  Returns the byte size of `bin` without copying the payload.
+
+  ## Returns
+
+    * `{:ok, size}`
+    * `{:error, :not_binary}` for a list or a bitstring that is not a binary
+
+  ## Examples
+
+      iex> Mojoler.Dsl.Bytes.borrow_len(<<1, 2, 3, 4>>)
+      {:ok, 4}
+
+      iex> Mojoler.Dsl.Bytes.borrow_len(<<1::7>>)
+      {:error, :not_binary}
+
+  """
+  @spec borrow_len(binary()) :: {:ok, non_neg_integer()} | {:error, :not_binary}
+  # coveralls-ignore-next-line
+  def borrow_len(_bin), do: :erlang.nif_error(:nif_not_loaded)
+end
+''',
+        'Mojoler.Dsl.Box': '''defmodule Mojoler.Dsl.Box do
+  @moduledoc """
+  A generated resource whose step function is `native/examples/box_user.mojo`.
+
+  `open/0` returns an opaque reference. The native object holds one signed
+  integer, starting at 0. That field is not visible to Elixir.
+  """
+
+  @typedoc """
+  Opaque box handle. Inspects as a reference. The running total is native state.
+  """
+  @type box :: reference()
+
+  @on_load :load_nif
+
+  @doc """
+  Loads `priv/native/libdsl_box.so`.
+
+  A second call returns `{:error, {:reload, charlist}}`.
+
+  ## Examples
+
+      iex> Mojoler.Dsl.Box.load_nif()
+      {:error, {:reload, ~c"NIF library already loaded (reload disallowed since OTP 20)."}}
+
+  """
+  @spec load_nif() :: :ok | {:error, term()}
+  def load_nif do
+    case :erlang.load_nif(Mojoler.Nif.path("libdsl_box"), 0) do
+      :ok -> Mojoler.Nif.mark!("libdsl_box")
+      other -> other
+    end
+  end
+
+  @doc """
+  Opens a box whose total is 0.
+
+  ## Returns
+
+  A `t:box/0`.
+
+  ## Examples
+
+      iex> box = Mojoler.Dsl.Box.open()
+      iex> is_reference(box)
+      true
+
+  """
+  @spec open() :: box()
+  # coveralls-ignore-next-line
+  def open, do: :erlang.nif_error(:nif_not_loaded)
+
+  @doc """
+  Adds `delta` to the box and returns the new total.
+
+  `box` is a handle from `open/0`. `delta` is a signed integer. There is no
+  optional argument. The native step is `value + delta`.
+
+  ## Raises
+
+    * `ArgumentError` when `box` is not a box from this module, or `delta`
+      is not an integer
+
+  ## Examples
+
+      iex> box = Mojoler.Dsl.Box.open()
+      iex> Mojoler.Dsl.Box.bump(box, 20)
+      20
+      iex> Mojoler.Dsl.Box.bump(box, 22)
+      42
+      iex> Mojoler.Dsl.Box.bump(:nope, 1)
+      ** (ArgumentError) argument error
+
+  """
+  @spec bump(box(), integer()) :: integer()
+  # coveralls-ignore-next-line
+  def bump(_box, _delta), do: :erlang.nif_error(:nif_not_loaded)
+end
+''',
+    }
+    try:
+        return docs[module["module"]]
+    except KeyError:
+        fail(f"no elixir docs for {module['module']}")
 
 def render(data: dict) -> dict[str, str]:
     files = {}

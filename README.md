@@ -5,6 +5,7 @@
 [![Hex Downloads](https://img.shields.io/hexpm/dt/mojoler.svg)](https://hex.pm/packages/mojoler)
 [![License](https://img.shields.io/hexpm/l/mojoler.svg)](https://github.com/thanos/mojoler/blob/v0.1.0/LICENSE)
 [![CI](https://github.com/thanos/mojoler/actions/workflows/linux.yml/badge.svg)](https://github.com/thanos/mojoler/actions/workflows/linux.yml)
+[![Coverage](https://coveralls.io/repos/github/thanos/mojoler/badge.svg)](https://coveralls.io/github/thanos/mojoler)
 
 Mojoler loads Mojo as an OTP NIF. You call an Elixir function. The body runs in Mojo.
 

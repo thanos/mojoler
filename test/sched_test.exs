@@ -1,6 +1,8 @@
 defmodule Mojoler.SchedTest do
   use ExUnit.Case, async: false
 
+  doctest Mojoler.Sched
+
   test "hold copies before the dirty loop and returns the same bytes" do
     assert Mojoler.Sched.hold(<<1, 2, 3>>, 20) == <<1, 2, 3>>
     assert Mojoler.Sched.io_ping() == :ok

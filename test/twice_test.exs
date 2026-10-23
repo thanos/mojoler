@@ -1,6 +1,8 @@
 defmodule Mojoler.TwiceTest do
   use ExUnit.Case
 
+  doctest Mojoler.Twice
+
   test "double(21) == 42" do
     assert Mojoler.Twice.double(21) == 42
   end

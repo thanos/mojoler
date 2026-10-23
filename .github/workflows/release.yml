@@ -44,6 +44,7 @@ jobs:
       - name: Test
         run: |
           mix deps.get
+          mix credo --strict
           scripts/doctor.sh
           scripts/check-abi.sh
           scripts/test-isolated.sh
