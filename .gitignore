@@ -19,3 +19,6 @@ experiments/abi/diagnostic/layout
 /baoulo/
 .tool-versions
 /doc/
+/native/mojoler/abi/manifest.json
+/priv/native/FINGERPRINT
+/priv/native/link-inputs.txt
