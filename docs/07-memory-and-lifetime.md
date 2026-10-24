@@ -1,5 +1,7 @@
 # 07 — Memory and lifetime
 
+Stage 0 left binary ownership untested. Stage 3 measured borrow, copy, freeze, pin, and retain. The two `calloc` blocks for the NIF entry are still process-lifetime, and that bound is [stages/s1.md](stages/s1.md). The rest of this chapter is the Stage 0 account.
+
 ## Learning objectives
 
 - Name who owns each pointer in `add` and how long it lives.

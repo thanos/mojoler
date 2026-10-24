@@ -1,5 +1,7 @@
 # 08 — Schedulers and the Mojo runtime
 
+This chapter records the Stage 0 scheduler questions. Stage 4 later measured a dirty-CPU burn against a normal-scheduler control in a one-scheduler VM: 18 heartbeats during 200 ms of dirty work, and 0 during the same burn with flags 0. See [stages/s4.md](stages/s4.md). The sentence below that says this repository never launched a GPU kernel is the Stage 0 fact. Stage 8 ran one.
+
 ## Learning objectives
 
 - Decide whether `add` belongs on a normal scheduler.

@@ -1,6 +1,8 @@
 defmodule Mojoler.POCTest do
   use ExUnit.Case
 
+  doctest Mojoler.POC
+
   @max 9_223_372_036_854_775_807
   @min -9_223_372_036_854_775_808
 
@@ -38,6 +40,7 @@ defmodule Mojoler.POCTest do
 
   test "wrong arity is rejected before the native callback" do
     assert_raise UndefinedFunctionError, fn ->
+      # credo:disable-for-next-line Credo.Check.Refactor.Apply
       apply(Mojoler.POC, :add, [1])
     end
   end

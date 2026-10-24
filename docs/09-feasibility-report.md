@@ -1,5 +1,7 @@
 # 09 — Feasibility report
 
+The PASS lines in this chapter are the Stage 0 result: `add/2` on this Mac and on Ubuntu, plus one Apple GPU call. Dirty scheduling, resources, and a 4-wide GPU batch were measured later. Those rows are [stages/report.md](stages/report.md), not a rewrite of the lines below. Unload of the NIF entry is still not a free. `Mojoler.Own` does free its private box.
+
 ## Learning objectives
 
 - Apply the word PASS only to the platform that was executed.

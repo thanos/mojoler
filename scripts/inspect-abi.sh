@@ -3,7 +3,7 @@
 set -euo pipefail
 
 root="$(cd "$(dirname "$0")/.." && pwd)"
-so="$root/priv/native/libpoc.so"
+so="${1:-$root/priv/native/libpoc.so}"
 
 if [[ ! -f "$so" ]]; then
   "$root/scripts/build-native.sh"

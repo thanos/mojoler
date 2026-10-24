@@ -1,0 +1,8 @@
+# Undefined symbols that are not enif_* and are reviewed.
+# Darwin's dyld inserts dyld_stub_binder. libc symbols appear when Mojo calls them.
+# Do not add a symbol until nm has shown it and the source that references it is known.
+abort
+calloc
+free
+dyld_stub_binder
+enif_monotonic_time

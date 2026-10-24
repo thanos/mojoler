@@ -1,0 +1,57 @@
+# Publishes the Hex package when a v* tag is pushed.
+# The tag must match @version in mix.exs (v0.1.0 publishes 0.1.0).
+# Repository secret HEX_API_KEY is a Hex API key from `mix hex.user key generate`.
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: Publish to Hex
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: "28.3.1"
+          elixir-version: "1.20.2"
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: false
+
+      - name: Install Mojo 1.1.0
+        run: |
+          uv venv --python 3.12
+          uv pip install -r requirements.txt
+
+      - name: Tag matches mix.exs
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if ! grep -q "@version \"${version}\"" mix.exs; then
+            echo "tag ${GITHUB_REF_NAME} does not match @version in mix.exs"
+            exit 1
+          fi
+
+      - name: Test
+        run: |
+          mix deps.get
+          mix credo --strict
+          scripts/doctor.sh
+          scripts/check-abi.sh
+          scripts/test-isolated.sh
+          (cd examples/consumer && mix deps.get && mix test)
+          (cd examples/umbrella && mix deps.get && mix test)
+
+      - name: Publish
+        env:
+          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+        run: mix hex.publish --yes
