@@ -31,6 +31,17 @@ else
   )
 fi
 
+# Prefer the project venv. A Hex checkout has no venv, so `mojo` on PATH is enough.
+_mojoler_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+if [[ -x "${_mojoler_root}/.venv/bin/mojo" ]]; then
+  MOJO="${_mojoler_root}/.venv/bin/mojo"
+elif command -v mojo >/dev/null 2>&1; then
+  MOJO="$(command -v mojo)"
+else
+  MOJO=""
+fi
+unset _mojoler_root
+
 if command -v clang >/dev/null 2>&1; then
   CC_TOOL="clang"
 elif command -v cc >/dev/null 2>&1; then

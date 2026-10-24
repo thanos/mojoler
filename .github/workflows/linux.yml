@@ -1,11 +1,14 @@
-# Linux x86-64 CPU NIF. GitHub-hosted runners have no GPU, so this job does
-# not test Mojo device code. A green run is the Linux row; it does not change
-# the macOS PASS by itself until the log is recorded.
+# Linux x86-64 CPU gates. This runner has no GPU and is not an ARM64 Mac.
+# A green job is the Linux CPU row. It does not mark NVIDIA, Linux GPU, or
+# macOS ARM64 as tested. Those rows stay NOT RUN until a machine runs them.
 name: linux
 
 on:
   push:
+    branches:
+      - "**"
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -13,7 +16,7 @@ permissions:
 jobs:
   nif:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
 
@@ -31,18 +34,131 @@ jobs:
           uv venv --python 3.12
           uv pip install -r requirements.txt
 
-      - name: Doctor
-        run: scripts/doctor.sh
+      - name: G0 doctor
+        run: scripts/doctor.sh | tee /tmp/doctor.txt
 
-      - name: ABI experiments
-        run: scripts/run-abi-experiments.sh
+      - name: Compile native libraries
+        run: mix deps.get && mix compile
 
-      - name: ExUnit
-        run: scripts/test-isolated.sh
+      - name: G1 ABI check
+        run: scripts/check-abi.sh | tee /tmp/abi.txt
+
+      - name: Credo
+        run: mix credo --strict
+
+      - name: G0 G2 G3 G4 G6 G7 ExUnit and Coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: perl -e 'alarm shift; exec @ARGV' 180 mix coveralls.github | tee /tmp/exunit.txt
+
+      - name: G5 consumer and umbrella
+        run: |
+          (cd examples/consumer && mix deps.get && mix test && mix clean && mix test)
+          (cd examples/umbrella && mix deps.get && mix test)
+
+      - name: Archive evidence
+        if: always()
+        run: |
+          mkdir -p /tmp/evidence
+          cp /tmp/doctor.txt /tmp/abi.txt /tmp/exunit.txt /tmp/evidence/ || true
+          if [[ -f priv/native/FINGERPRINT ]]; then cp priv/native/FINGERPRINT /tmp/evidence/; fi
+          if [[ -f native/mojoler/abi/manifest.json ]]; then cp native/mojoler/abi/manifest.json /tmp/evidence/; fi
+          if [[ -f priv/native/link-inputs.txt ]]; then cp priv/native/link-inputs.txt /tmp/evidence/; fi
+          sha256sum native/mojoler/abi/otp_nif.mojo > /tmp/evidence/otp_nif.sha256 || true
+          git rev-parse HEAD > /tmp/evidence/commit.txt
+          uname -srm > /tmp/evidence/uname.txt
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: abi-observed
-          path: experiments/abi/OBSERVED.txt
+          name: linux-cpu-evidence
+          path: /tmp/evidence
           if-no-files-found: warn
+
+  # Requested range: Elixir 1.8–1.20 × OTP 27–29.
+  # Elixir 1.8–1.16 only support OTP 26 or older, so setup-beam has no
+  # build for them on OTP 27, 28, or 29. Elixir 1.17 and 1.18 stop at OTP 27.
+  # Elixir 1.19 stops at OTP 28. Elixir 1.20 is the first release that
+  # covers OTP 27–29. Those facts are Elixir's compatibility table, not a
+  # Mojoler result: https://hexdocs.pm/elixir/compatibility-and-deprecations.html
+  #
+  # The nif job above is the native suite, pinned to Elixir 1.20.2 / OTP 28.3.1.
+  # This job checks the other installable cells in that rectangle:
+  #   reject-elixir  mix.exs requires ~> 1.20, so compile must fail
+  #   reject-otp     the ABI pin is OTP 28 / erts 16.2, so generation must fail
+  #   pin            Elixir 1.20.2 / OTP 28.3.1 must regenerate the committed ABI
+  beam:
+    name: Elixir ${{ matrix.elixir }} / OTP ${{ matrix.otp }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - elixir: "1.17"
+            otp: "27"
+            expect: reject-elixir
+          - elixir: "1.18"
+            otp: "27"
+            expect: reject-elixir
+          - elixir: "1.19"
+            otp: "27"
+            expect: reject-elixir
+          - elixir: "1.19"
+            otp: "28"
+            expect: reject-elixir
+          - elixir: "1.20.2"
+            otp: "27"
+            expect: reject-otp
+          - elixir: "1.20.2"
+            otp: "28.3.1"
+            expect: pin
+          - elixir: "1.20.2"
+            otp: "29"
+            expect: reject-otp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{ matrix.otp }}
+          elixir-version: ${{ matrix.elixir }}
+
+      - name: Versions
+        run: |
+          elixir --version
+          erl -noshell -eval 'io:format("otp ~s erts ~s~n",[erlang:system_info(otp_release), erlang:system_info(version)]), halt().'
+
+      - name: Clang for the ABI generator
+        if: matrix.expect != 'reject-elixir'
+        run: sudo apt-get update && sudo apt-get install -y clang
+
+      - name: Elixir requirement rejects this compiler
+        if: matrix.expect == 'reject-elixir'
+        run: |
+          set +e
+          mix compile
+          status=$?
+          set -e
+          if [[ "$status" -eq 0 ]]; then
+            echo "mix compile succeeded; mix.exs requires Elixir ~> 1.20"
+            exit 1
+          fi
+          echo "mix rejected Elixir ${{ matrix.elixir }} on OTP ${{ matrix.otp }}"
+
+      - name: ABI pin rejects this OTP
+        if: matrix.expect == 'reject-otp'
+        run: |
+          set +e
+          python3 tools/abi/generate.py --check
+          status=$?
+          set -e
+          if [[ "$status" -eq 0 ]]; then
+            echo "generator accepted OTP ${{ matrix.otp }}; pin is OTP 28 / erts 16.2"
+            exit 1
+          fi
+          echo "generator refused OTP ${{ matrix.otp }}"
+
+      - name: ABI pin matches OTP 28.3.1
+        if: matrix.expect == 'pin'
+        run: python3 tools/abi/generate.py --check

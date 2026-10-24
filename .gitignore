@@ -2,8 +2,15 @@
 .mojo_cache/
 _build/
 deps/
+/doc/
+/cover/
+/mojoler-*.tar
 erl_crash.dump
 priv/native/*.so
+priv/native/FINGERPRINT
+priv/native/link-inputs.txt
+priv/native/staging/
+native/mojoler/abi/manifest.json
 experiments/abi/**/*.dylib
 experiments/abi/**/*.so
 experiments/gpu/*.so

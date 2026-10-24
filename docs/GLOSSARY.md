@@ -6,7 +6,7 @@
 
 **BEAM.** The Erlang virtual machine that executes Elixir. `beam.smp` is the executable that exports `enif_*` and `dlopen`s NIFs.
 
-**`calloc`.** libc allocator that returns zeroed memory. `nif_init` uses it because Mojo 1.1.0 has no module-level variable. The blocks are not freed.
+**`calloc`.** libc allocator that returns zeroed memory. `nif_init` uses it because Mojo 1.1.0 has no module-level variable. Those two blocks stay until the process exits. `Mojoler.Own` uses `free` on its private box in `unload`. `enif_free` is a different allocator.
 
 **Dirty scheduler.** A BEAM scheduler reserved for NIFs that set `ERL_NIF_DIRTY_JOB_CPU_BOUND` (1) or `ERL_NIF_DIRTY_JOB_IO_BOUND` (2) in `ErlNifFunc.flags`. `add` sets 0.
 
@@ -36,11 +36,21 @@
 
 **Origin.** Compile-time provenance of a Mojo pointer. `ImmStaticOrigin` is the origin of a string literal. Origins are not bytes in the struct.
 
+**Owner.** The single Mojo variable that owns a value. When its lifetime ends, Mojo destroys the value. See [ownership.md](ownership.md).
+
+**Transfer (`^`).** Moves ownership to a new name. The source is uninitialized afterward.
+
+**Lifecycle.** Construction in `__init__(out self)`, use, then destruction in `__deinit__(deinit self)` at the last use.
+
 **OTP.** Open Telecom Platform, the Erlang distribution. Version 28.3.1, emulator erts 16.2.
 
 **Reduction.** VM accounting unit for Erlang work. NIFs do not automatically consume reductions.
 
-**Resource.** A VM-managed blob with a destructor. Not used here. Its init struct is 40 bytes, and that size is stored in the entry as a version tag.
+**Resource.** A VM-managed object with a destructor. Stage 0 did not allocate one. Stage 3 does, in `Mojoler.Own`. The init struct is still 40 bytes, and that size is stored in the entry as a version tag. The BEAM term is a handle. Elixir code never receives the native pointer.
+
+**Borrowed view.** A pointer from `enif_inspect_binary` that is valid only for the callback. `borrow_len` and `borrow_stable` read it and then free the descriptor. They do not return the pointer.
+
+**Fingerprint.** The sha256 `scripts/fingerprint.sh` prints. The Mix compiler skips `mojo build` when that line still matches `priv/native/FINGERPRINT` and the libraries are present.
 
 **rpath.** A Mach-O load command that says where to find `@rpath/...` dependencies. This NIF's rpath points at the project venv's `modular/lib`.
 

@@ -1,0 +1,14 @@
+{
+  "modules": [
+    {
+      "module": "Mojoler.Dsl.Nope",
+      "lib": "libnope",
+      "source": "native/generated/nope.mojo",
+      "elixir": "lib/mojoler/dsl/nope.ex",
+      "user": "examples.bytes_user",
+      "functions": [
+        {"name": "borrow_len", "arity": 1, "kind": "borrow_len", "schedule": "dirty_cpu", "ownership": "borrow"}
+      ]
+    }
+  ]
+}

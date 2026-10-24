@@ -1,0 +1,9 @@
+{
+  "otp_release": "28",
+  "erts": "16.2",
+  "nif_major": 2,
+  "nif_minor": 17,
+  "pointer_bits": 64,
+  "endian": "little",
+  "sizeof_long": 8
+}

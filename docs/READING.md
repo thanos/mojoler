@@ -14,6 +14,10 @@ Versions are the ones doctor printed. Header paths are for the asdf install of E
 ## Mojo 1.1.0
 
 - `mojo build --help` on the venv binary — `--emit shared-lib`, `--emit llvm`, `-Xlinker`. This is the authority for flags.
+- <https://mojolang.org/docs/manual/values/> — one owner per value. The local write-up is [ownership.md](ownership.md).
+- <https://mojolang.org/docs/manual/values/ownership/> — argument conventions and the `^` transfer.
+- <https://mojolang.org/docs/manual/lifecycle/> — initializers and as-soon-as-possible destruction.
+- <https://mojolang.org/docs/manual/quickstart/>, <https://mojolang.org/docs/manual/get-started/>, <https://mojolang.org/docs/tools/notebooks/> — the language tours the README examples come from.
 - <https://mojolang.org/docs/manual/c-ffi/> — `external_call`, `std.ffi` aliases, `OwnedDLHandle`, `RegisterPassable` layout, `MutUntrackedOrigin`.
 - <https://mojolang.org/docs/reference/decorators/export/> — `@export` and `abi`.
 - <https://mojolang.org/docs/std/runtime/initialize_runtime/> — process-global init. The BEAM experiment is chapter 08; the page is not a substitute for that log.
