@@ -46,6 +46,7 @@ jobs:
           mix deps.get
           mix credo --strict
           scripts/doctor.sh
+          mix compile
           scripts/check-abi.sh
           scripts/test-isolated.sh
           (cd examples/consumer && mix deps.get && mix test)
@@ -54,4 +55,10 @@ jobs:
       - name: Publish
         env:
           HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
-        run: mix hex.publish --yes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          if python3 -c 'import json,sys,urllib.request; v=sys.argv[1]; data=json.load(urllib.request.urlopen("https://hex.pm/api/packages/mojoler")); raise SystemExit(0 if any(r["version"]==v for r in data["releases"]) else 1)' "$version"; then
+            echo "mojoler ${version} is already on Hex"
+          else
+            mix hex.publish --yes
+          fi

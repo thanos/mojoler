@@ -6,3 +6,9 @@ calloc
 free
 dyld_stub_binder
 enif_monotonic_time
+# glibc and libgcc leave these undefined in a Mojo shared library on Ubuntu 24.04.
+# nm -u listed them on the negative fixture in Actions run 40059266050.
+_ITM_deregisterTMCloneTable
+_ITM_registerTMCloneTable
+__cxa_finalize
+__gmon_start__
