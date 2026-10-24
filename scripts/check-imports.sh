@@ -11,9 +11,11 @@ grep -v '^#' "$root/tools/abi/compiler_imports.txt" | awk 'NF' >"$allow"
 awk 'NF && $1 !~ /^#/' "$root/tools/abi/functions.txt" >>"$allow"
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
+  # Mach-O prefixes defined C names with _. nm -u prints that underscore.
   undefined="$(nm -u "$so" | awk '{print $NF}' | sed 's/^_//')"
 else
-  undefined="$(nm -u "$so" | awk '{print $NF}')"
+  # glibc versions the symbol: abort@GLIBC_2.2.5. The allowlist names the symbol.
+  undefined="$(nm -u "$so" | awk '{print $NF}' | sed 's/@.*//')"
 fi
 
 bad=0
