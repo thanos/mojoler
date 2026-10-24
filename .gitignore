@@ -22,3 +22,4 @@ experiments/abi/diagnostic/layout
 /native/mojoler/abi/manifest.json
 /priv/native/FINGERPRINT
 /priv/native/link-inputs.txt
+.DS_Store
