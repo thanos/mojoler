@@ -10,4 +10,5 @@ experiments/gpu/*.so
 experiments/abi/**/*.ll
 experiments/abi/diagnostic/layout
 /baoulo/
-.tool-versions 
+.tool-versions
+/doc/
